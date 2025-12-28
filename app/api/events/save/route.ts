@@ -27,13 +27,12 @@ export async function POST(request: Request) {
 
     const authClient = await getGoogleAuthClient()
     const calendarService = new GoogleCalendarService(calendarId, authClient)
-    const distanceService = new DistanceService()
 
     // Deserialize the FullCalendarGig
-    const gig = FullCalendarGig.deserialize(gigData, distanceService, calendarService)
+    const gig = FullCalendarGig.deserialize(gigData)
 
     // Save to Google Calendar
-    await gig.store()
+    await gig.store(calendarService)
 
     return NextResponse.json({ success: true })
   } catch (error) {

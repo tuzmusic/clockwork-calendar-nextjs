@@ -2,15 +2,11 @@ import { GaxiosResponse } from "gaxios";
 import { calendar_v3 } from "googleapis";
 
 export default class CalendarService {
-  public async postEvent(_json: calendar_v3.Schema$Event): Promise<
-    GaxiosResponse<calendar_v3.Schema$Event>
-  > {
+  public async postEvent(_json: calendar_v3.Schema$Event): Promise<any> {
     throw Error("not implemented");
   }
 
-  public async updateEvent(_eventId: string | null | undefined, _json: calendar_v3.Schema$Event): Promise<
-    GaxiosResponse<calendar_v3.Schema$Event>
-  > {
+  public async updateEvent(_eventId: string | null | undefined, _json: calendar_v3.Schema$Event): Promise<any> {
     throw Error("not implemented");
   }
 

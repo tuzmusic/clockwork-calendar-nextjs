@@ -1,18 +1,21 @@
 import dayjs from "dayjs";
 import { GaxiosResponse } from "gaxios";
 import { calendar_v3, google } from "googleapis";
+import { OAuth2Client } from "google-auth-library";
 
-import { oauth2Client } from "~/auth/auth0.server";
-import CalendarService from "@/lib/services/CalendarService";
+import CalendarService from "./CalendarService";
 
 export default class GoogleCalendarService extends CalendarService {
   private calendar: calendar_v3.Calendar;
 
-  public constructor(private calendarId: string) {
+  public constructor(
+    private calendarId: string,
+    private authClient: OAuth2Client
+  ) {
     super();
     this.calendar = google.calendar({
       version: "v3",
-      auth: oauth2Client
+      auth: this.authClient
     });
   }
 
@@ -30,15 +33,14 @@ export default class GoogleCalendarService extends CalendarService {
     return calResponse?.data?.items ?? [];
   }
 
-  public async postEvent(json: calendar_v3.Schema$Event): Promise<GaxiosResponse<calendar_v3.Schema$Event>> {
+  public async postEvent(json: calendar_v3.Schema$Event) {
     return await this.calendar.events.insert({
       calendarId: this.calendarId,
       requestBody: json
     });
   }
 
-  async updateEvent(eventId: string | null | undefined, json: calendar_v3.Schema$Event):
-    Promise<GaxiosResponse<calendar_v3.Schema$Event>> {
+  async updateEvent(eventId: string | null | undefined, json: calendar_v3.Schema$Event) {
     if (!eventId) throw Error(`eventId is ${eventId}`);
 
     return await this.calendar.events.update({

@@ -29,28 +29,22 @@ async function loadEvents() {
     // Fetch email and parse
     const gmailService = new GmailService(authClient)
     const emailHtml = await gmailService.getMessageBody()
-    const emailParser = new EmailParser(emailHtml)
-    const emailGigParts = await emailParser.getGigParts()
-    const emailGigs = emailGigParts.map((gigData) =>
-      EmailGig.make(gigData.location, gigData.parts, emailHtml)
-    )
+    const emailGigs = EmailParser.parseEmail(emailHtml)
 
     // Fetch calendar events
     const calendarService = new GoogleCalendarService(calendarId, authClient)
     const events = await calendarService.getEvents({ fromDate: new Date() })
-    const googleGigs = events.map((event) => new GoogleGig(event))
+    const googleGigs = events.map((event) => GoogleGig.make(event))
 
     // Build schedule
     const distanceService = new DistanceService()
     const schedule = Schedule.build({
       emailGigs,
-      googleGigs,
-      distanceService,
-      calendarService,
-    })
+      remoteGigs: googleGigs,
+    }, distanceService)
 
     return {
-      eventRows: schedule.eventRows.map((row) => row.serialize()),
+      eventRows: schedule.eventSets.map((row) => row.serialize()),
       calendarId,
     }
   } catch (error) {
