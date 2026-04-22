@@ -40,17 +40,16 @@ async function loadEvents() {
     const distanceService = new DistanceService()
     const schedule = Schedule.build({
       emailGigs,
-      remoteGigs: googleGigs,
+      remoteGigs: googleGigs
     }, distanceService)
 
-    return {
-      eventRows: schedule.eventSets.map((row) => row.serialize()),
-      calendarId,
-    }
+    const eventRows = schedule.eventSets.map((row) => row.serialize());
+
+    return { eventRows, calendarId }
   } catch (error) {
     console.error('Error loading events:', error)
     return {
-      error: error instanceof Error ? error.message : 'Failed to load events',
+      error: error instanceof Error ? error.message : 'Failed to load events'
     }
   }
 }
@@ -77,7 +76,7 @@ export default async function EventsPage() {
           <p className="text-sm text-gray-500 mb-4">
             Calendar: {data.calendarId}
           </p>
-          <EventsTable eventRows={data.eventRows} />
+          <EventsTable eventRows={data.eventRows}/>
         </div>
       </div>
     </div>

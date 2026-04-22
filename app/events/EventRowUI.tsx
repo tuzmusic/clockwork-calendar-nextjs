@@ -39,7 +39,7 @@ export default function EventRowUI({
                 <div className="text-sm">
                   <span className="font-semibold">Parts:</span>
                   <ul className="list-disc list-inside ml-2">
-                    {JSON.parse(emailGig.parts).map((part: any, i: number) => (
+                    {emailGig.parts.map((part: any, i: number) => (
                       <li key={i}>{part.type}</li>
                     ))}
                   </ul>
