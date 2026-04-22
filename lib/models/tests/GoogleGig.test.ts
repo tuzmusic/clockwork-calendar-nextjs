@@ -1,7 +1,7 @@
 import { calendar_v3 } from "googleapis";
 
-import GoogleGig from "~/data/models/GoogleGig";
-import { end, location, mockDistanceData, mockParts, start } from "~/data/models/tests/testConstants";
+import GoogleGig from "@/lib/models/GoogleGig";
+import { end, location, mockDistanceData, mockParts, start } from "@/lib/models/tests/testConstants";
 
 describe("GoogleGig.make", () => {
   describe("with no extendedProperties", () => {

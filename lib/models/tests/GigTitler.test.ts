@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { mock } from "vitest-mock-extended";
 
-import FullCalendarGig, { FullCalendarGigJson } from "~/data/models/FullCalendarGig";
-import GigTitler from "~/data/models/GigTitler";
-import { cocktailHourPartJSON, mockReceptionJSONWithActual } from "~/data/models/tests/testConstants";
+import FullCalendarGig, { FullCalendarGigJson } from "@/lib/models/FullCalendarGig";
+import GigTitler from "@/lib/models/GigTitler";
+import { cocktailHourPartJSON, mockReceptionJSONWithActual } from "@/lib/models/tests/testConstants";
 
 const walthamFullAddress = "15 Waltham St, Boston, MA";
 

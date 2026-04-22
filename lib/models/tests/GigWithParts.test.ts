@@ -1,8 +1,8 @@
-import { Ceremony } from "~/data/models/GigParts/Ceremony";
-import { CocktailHour } from "~/data/models/GigParts/CocktailHour";
-import { GigPart } from "~/data/models/GigParts/GigPart";
-import { Reception } from "~/data/models/GigParts/Reception";
-import GigWithParts from "~/data/models/GigWithParts";
+import { Ceremony } from "@/lib/models/GigParts/Ceremony";
+import { CocktailHour } from "@/lib/models/GigParts/CocktailHour";
+import { GigPart } from "@/lib/models/GigParts/GigPart";
+import { Reception } from "@/lib/models/GigParts/Reception";
+import GigWithParts from "@/lib/models/GigWithParts";
 
 const laterTime = "2024-12-01T19:00:00";
 const earlierTime = "2024-12-01T18:00:00";

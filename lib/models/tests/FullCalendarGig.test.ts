@@ -1,11 +1,11 @@
 import { calendar_v3 } from "googleapis";
 import { mock } from "vitest-mock-extended";
 
-import { TIME_ZONE } from "~/data/models/constants";
-import { getDistanceServiceWithMocks } from "~/data/models/DistanceFixtureService.ts/testUtils";
-import FullCalendarGig, { FullCalendarGigJson } from "~/data/models/FullCalendarGig";
-import { CocktailHour } from "~/data/models/GigParts/CocktailHour";
-import { Reception } from "~/data/models/GigParts/Reception";
+import { TIME_ZONE } from "@/lib/models/constants";
+import { getDistanceServiceWithMocks } from "@/lib/models/DistanceFixtureService.ts/testUtils";
+import FullCalendarGig, { FullCalendarGigJson } from "@/lib/models/FullCalendarGig";
+import { CocktailHour } from "@/lib/models/GigParts/CocktailHour";
+import { Reception } from "@/lib/models/GigParts/Reception";
 import {
   cocktailHourPart,
   cocktailHourPartJSON,
@@ -13,10 +13,10 @@ import {
   mockReceptionJSONWithActual,
   mockReceptionPart,
   receptionPart
-} from "~/data/models/tests/testConstants";
-import { DistanceData } from "~/data/models/types";
-import CalendarFixtureService from "~/data/services/CalendarFixtureService";
-import DistanceService from "~/data/services/DistanceService";
+} from "@/lib/models/tests/testConstants";
+import { DistanceData } from "@/lib/models/types";
+import CalendarFixtureService from "@/lib/services/CalendarFixtureService";
+import DistanceService from "@/lib/services/DistanceService";
 
 describe("FullCalendarGig.make", () => {
   describe("deserialize", () => {

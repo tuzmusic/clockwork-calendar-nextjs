@@ -1,10 +1,10 @@
 import { mock } from "vitest-mock-extended";
 
-import EmailGig from "~/data/models/EmailGig";
-import { EventRowJson } from "~/data/models/EventRow";
-import FullCalendarGig from "~/data/models/FullCalendarGig";
-import { GigPartJSON } from "~/data/models/GigParts/GigPart";
-import GoogleGig from "~/data/models/GoogleGig";
+import EmailGig from "@/lib/models/EmailGig";
+import { EventRowJson } from "@/lib/models/EventRow";
+import FullCalendarGig from "@/lib/models/FullCalendarGig";
+import { GigPartJSON } from "@/lib/models/GigParts/GigPart";
+import GoogleGig from "@/lib/models/GoogleGig";
 import {
   cocktailEnd,
   cocktailHourPart,
@@ -17,9 +17,9 @@ import {
   receptionPart,
   receptionStart,
   start
-} from "~/data/models/tests/testConstants";
-import { DistanceData } from "~/data/models/types";
-import DistanceService from "~/data/services/DistanceService";
+} from "@/lib/models/tests/testConstants";
+import { DistanceData } from "@/lib/models/types";
+import DistanceService from "@/lib/services/DistanceService";
 
 const cocktailJson: GigPartJSON = {
   type: "cocktail hour",

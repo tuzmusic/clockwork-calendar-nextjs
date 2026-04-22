@@ -1,4 +1,4 @@
-import SimpleGig, { SimpleGigJson } from "~/data/models/SimpleGig";
+import SimpleGig, { SimpleGigJson } from "@/lib/models/SimpleGig";
 
 const earlierTime = "2024-12-01T18:00:00";
 const finalTime = "2024-12-01T21:00:00";

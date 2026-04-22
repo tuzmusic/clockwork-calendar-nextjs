@@ -1,7 +1,7 @@
-import { FullDistanceInfoObj } from "~/data/models/FullCalendarGig";
-import { CocktailHour } from "~/data/models/GigParts/CocktailHour";
-import { GigPartJSON } from "~/data/models/GigParts/GigPart";
-import { Reception } from "~/data/models/GigParts/Reception";
+import { FullDistanceInfoObj } from "@/lib/models/FullCalendarGig";
+import { CocktailHour } from "@/lib/models/GigParts/CocktailHour";
+import { GigPartJSON } from "@/lib/models/GigParts/GigPart";
+import { Reception } from "@/lib/models/GigParts/Reception";
 
 export const location = "123 Sesame St, Concord, NH";
 

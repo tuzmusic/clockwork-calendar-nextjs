@@ -1,5 +1,5 @@
-import { LOCATIONS } from "~/data/models/constants";
-import DistanceService from "~/data/services/DistanceService";
+import { LOCATIONS } from "@/lib/models/constants";
+import DistanceService from "@/lib/services/DistanceService";
 
 type GetDistanceInfoArgs = Parameters<InstanceType<typeof DistanceService>["getDistanceInfo"]>[0];
 export const conditions = (location: string) => ( {

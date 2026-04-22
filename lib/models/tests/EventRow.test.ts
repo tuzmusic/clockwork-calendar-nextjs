@@ -1,13 +1,13 @@
 import { calendar_v3 } from "googleapis";
 
-import { getDistanceServiceWithMocks } from "~/data/models/DistanceFixtureService.ts/testUtils";
-import EmailGig from "~/data/models/EmailGig";
-import EventRow from "~/data/models/EventRow";
-import { Ceremony } from "~/data/models/GigParts/Ceremony";
-import { CocktailHour } from "~/data/models/GigParts/CocktailHour";
-import { GigPart, GigPartJSON } from "~/data/models/GigParts/GigPart";
-import { Reception } from "~/data/models/GigParts/Reception";
-import GoogleGig from "~/data/models/GoogleGig";
+import { getDistanceServiceWithMocks } from "@/lib/models/DistanceFixtureService.ts/testUtils";
+import EmailGig from "@/lib/models/EmailGig";
+import EventRow from "@/lib/models/EventRow";
+import { Ceremony } from "@/lib/models/GigParts/Ceremony";
+import { CocktailHour } from "@/lib/models/GigParts/CocktailHour";
+import { GigPart, GigPartJSON } from "@/lib/models/GigParts/GigPart";
+import { Reception } from "@/lib/models/GigParts/Reception";
+import GoogleGig from "@/lib/models/GoogleGig";
 import {
   cocktailEnd,
   cocktailStart,
@@ -20,8 +20,8 @@ import {
   receptionEnd,
   receptionStart,
   start
-} from "~/data/models/tests/testConstants";
-import DistanceService from "~/data/services/DistanceService";
+} from "@/lib/models/tests/testConstants";
+import DistanceService from "@/lib/services/DistanceService";
 
 let distanceService: DistanceService
 

@@ -1,10 +1,10 @@
 import { mock } from "vitest-mock-extended";
 
-import EmailGig from "~/data/models/EmailGig";
-import GoogleGig from "~/data/models/GoogleGig";
-import Schedule from "~/data/models/Schedule";
-import { end, location, receptionPart, start } from "~/data/models/tests/testConstants";
-import DistanceService from "~/data/services/DistanceService";
+import EmailGig from "@/lib/models/EmailGig";
+import GoogleGig from "@/lib/models/GoogleGig";
+import Schedule from "@/lib/models/Schedule";
+import { end, location, receptionPart, start } from "@/lib/models/tests/testConstants";
+import DistanceService from "@/lib/services/DistanceService";
 
 describe("Schedule", () => {
   describe("Schedule.build", () => {

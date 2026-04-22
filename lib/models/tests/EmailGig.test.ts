@@ -1,5 +1,5 @@
-import EmailGig from "~/data/models/EmailGig";
-import { cocktailHourPart, location, receptionPart } from "~/data/models/tests/testConstants";
+import EmailGig from "@/lib/models/EmailGig";
+import { cocktailHourPart, location, receptionPart } from "@/lib/models/tests/testConstants";
 
 
 describe("EmailGig", () => {
