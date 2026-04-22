@@ -8,7 +8,7 @@ import EmailParser from '@/lib/parsers/emailParser/EmailParser'
 import EmailGig from '@/lib/models/EmailGig'
 import GoogleGig from '@/lib/models/GoogleGig'
 import Schedule from '@/lib/models/Schedule'
-import EventsTable from './EventsTable'
+import { EventsTable } from './components/EventsTable'
 
 async function loadEvents() {
   const { userId } = await auth()
