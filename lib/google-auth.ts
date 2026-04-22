@@ -1,15 +1,17 @@
-import { auth } from '@clerk/nextjs/server'
+import { auth, clerkClient } from '@clerk/nextjs/server'
 import { google } from 'googleapis'
 import { cookies } from 'next/headers'
 
 export async function getGoogleAuthClient() {
-  const { userId, getToken } = await auth()
+  const { userId } = await auth()
 
   if (!userId) {
     throw new Error('Not authenticated')
   }
 
-  const token = await getToken({ template: 'google' })
+  const client = await clerkClient()
+  const tokenResponse = await client.users.getUserOauthAccessToken(userId, 'google')
+  const token = tokenResponse.data[0]?.token
 
   if (!token) {
     throw new Error('No Google OAuth token found')
