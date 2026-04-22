@@ -1,7 +1,8 @@
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { google } from 'googleapis'
 import CalendarSelector from './CalendarSelector'
+import { getGoogleAuthClient } from '@/lib/google-auth'
 
 async function getCalendars() {
   const { userId } = await auth()
@@ -11,18 +12,8 @@ async function getCalendars() {
   }
 
   try {
-    const client = await clerkClient()
-    const tokenResponse = await client.users.getUserOauthAccessToken(userId!, 'google')
-    const token = tokenResponse.data[0]?.token
-
-    if (!token) {
-      return { error: 'No Google OAuth token found. Please sign in with Google.' }
-    }
-
-    const oauth2Client = new google.auth.OAuth2()
-    oauth2Client.setCredentials({ access_token: token })
-
-    const calendar = google.calendar({ version: 'v3', auth: oauth2Client })
+    const authClient = await getGoogleAuthClient()
+    const calendar = google.calendar({ version: 'v3', auth: authClient })
     const response = await calendar.calendarList.list()
 
     return { calendars: response.data.items || [] }
