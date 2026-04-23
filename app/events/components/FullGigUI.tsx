@@ -13,6 +13,8 @@ import { GigPartUI } from "@/app/events/components/GigPartUI";
 // import { useToggleParamValue } from "@/app/events/filters/useEventFilters";
 // import { useEventRouteFetchers } from "@/app/events/useEventRouteFetchers";
 import { useSearchParams } from "next/navigation";
+import { GigActionButton } from "@/app/events/components/GigActionButton";
+import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
 
 
 function addDistanceInfoToRow(row: EventRowJson, distanceInfo: FullDistanceInfoObj) {
@@ -74,7 +76,21 @@ export function FullGigUI(props: { row: EventRowJson }) {
         <div className={"flex flex-col items-end"}>
           {!row.googleGig ? <SaveGigButton row={row} /> : null}
           {timeIsDifferent || row.hasUpdates ? <UpdateGigButton row={row} /> : null}
-          {!gig.distanceInfo ? <GetDistanceInfoButtonWithFetcher row={row} /> : null}
+          {!gig.distanceInfo ?
+            <GigActionButton
+              value={row.appGig}
+              row={row}
+              // intent={EventsActionIntent.getDistanceInfo}
+              idleText={"Get distance info"}
+              loadingText={"Getting distance info"}
+              testId={"GET_DISTANCE_INFO_BUTTON"}
+              action={getDistanceInfo}
+            />
+
+
+
+
+            : null}
         </div>
       </div>
     </div>
