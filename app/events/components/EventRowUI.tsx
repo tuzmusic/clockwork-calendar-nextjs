@@ -1,3 +1,5 @@
+"use client"
+
 import React, { ComponentProps, useState } from "react";
 
 import { EventRowJson } from "@/lib/models/EventRow";
@@ -6,7 +8,6 @@ import { EmailHtml } from "@/app/events/components/EmailHtml";
 import { FullGigUI } from "@/app/events/components/FullGigUI";
 import { SaveGigButton } from "@/app/events/components/GigButtons";
 import { RoundedWrapper } from "@/app/events/components/RoundedWrapper";
-import { useAlwaysShowSavedGig } from "@/app/events/components/useAlwaysShowSavedGig";
 
 const MobileWrapper = (props: ComponentProps<typeof RoundedWrapper>) =>
   <RoundedWrapper className={`hidden sm:flex ${props.className ?? ""}`}>
@@ -39,7 +40,7 @@ const TABS = {
 } as const;
 
 export function EventRowUI({ row }: { row: EventRowJson }) {
-  useAlwaysShowSavedGig(row.id)
+  // useAlwaysShowSavedGig(row.id)
 
   const [selectedTab, setSelectedTab] = useState<keyof typeof TABS>("Full");
   const MiddleComponent = TABS[selectedTab];
