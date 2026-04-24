@@ -1,12 +1,12 @@
 import { EventRowJson } from "@/lib/models/EventRow";
 import { DistanceInfo } from "@/app/events/components/DistanceInfo";
 import { FullGigHeader } from "@/app/events/components/FullGigHeader";
-import { SaveGigButton, UpdateGigButton } from "@/app/events/components/GigButtons";
+import { SaveGigButton } from "@/app/events/components/GigButtons";
 import { GigPartUI } from "@/app/events/components/GigPartUI";
 // import { EventsActionIntent } from "@/app/events/EventsActionIntent";
 // import { useToggleParamValue } from "@/app/events/filters/useEventFilters";
 // import { useEventRouteFetchers } from "@/app/events/useEventRouteFetchers";
-import { GigActionButton, GigServerActionButton } from "@/app/events/components/GigActionButton";
+import { GigServerActionButton } from "@/app/events/components/GigActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
 import { useActionState } from "react";
 import { updateGig } from "@/app/events/functions/calendarActions";
@@ -42,7 +42,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
   const updatedRow = !finalDistanceInfo ? row : addDistanceInfoToRow(row, finalDistanceInfo)
 
   return (
-    <div className="[&>*]:p-2">
+    <div className="*:p-2">
       <FullGigHeader row={row} timeIsDifferent={timeIsDifferent}/>
 
       <ul>
@@ -65,7 +65,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
           </label>
         </div>*/}
 
-        <div className={"flex flex-col items-end"}>
+        <div className={"flex flex-col items-end w-full"}>
           {!row.googleGig ? <SaveGigButton row={row}/> : null}
           {timeIsDifferent || row.hasUpdates ?
             <GigServerActionButton
