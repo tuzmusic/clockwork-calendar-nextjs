@@ -6,7 +6,7 @@ import { GigPartUI } from "@/app/events/components/GigPartUI";
 // import { EventsActionIntent } from "@/app/events/EventsActionIntent";
 // import { useToggleParamValue } from "@/app/events/filters/useEventFilters";
 // import { useEventRouteFetchers } from "@/app/events/useEventRouteFetchers";
-import { GigActionButton } from "@/app/events/components/GigActionButton";
+import { GigActionButton, GigServerActionButton } from "@/app/events/components/GigActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
 import { useActionState } from "react";
 
@@ -30,18 +30,20 @@ export function FullGigUI(props: { row: EventRowJson }) {
     ((gig.startTime !== row.googleGig?.startDateTime)
       || (gig.endTime !== row.googleGig?.endDateTime));
 
-  const [fetchedDistanceInfo, distanceInfoAction , distanceInfoLoading] = useActionState(getDistanceInfo, null)
+  const [fetchedDistanceInfo, distanceInfoAction, distanceInfoLoading] = useActionState(getDistanceInfo, null)
+
   const finalDistanceInfo = fetchedDistanceInfo?.distanceInfo ?? gig.distanceInfo
+
   return (
     <div className="[&>*]:p-2">
-      <FullGigHeader row={row} timeIsDifferent={timeIsDifferent} />
+      <FullGigHeader row={row} timeIsDifferent={timeIsDifferent}/>
 
       <ul>
-        {gig.parts.map(part => <GigPartUI key={part.type} part={part} />)}
+        {gig.parts.map(part => <GigPartUI key={part.type} part={part}/>)}
       </ul>
 
       <div>
-        {finalDistanceInfo ? <DistanceInfo info={finalDistanceInfo} /> : null}
+        {finalDistanceInfo ? <DistanceInfo info={finalDistanceInfo}/> : null}
       </div>
 
       <div className={"flex justify-between"}>
@@ -57,19 +59,17 @@ export function FullGigUI(props: { row: EventRowJson }) {
         </div>*/}
 
         <div className={"flex flex-col items-end"}>
-          {!row.googleGig ? <SaveGigButton row={row} /> : null}
-          {timeIsDifferent || row.hasUpdates ? <UpdateGigButton row={row} /> : null}
+          {!row.googleGig ? <SaveGigButton row={row}/> : null}
+          {timeIsDifferent || row.hasUpdates ? <UpdateGigButton row={row}/> : null}
 
           {!finalDistanceInfo ?
-            <GigActionButton
-              value={row.appGig}
+            <GigServerActionButton
               row={row}
-              idleText={"Get distance info"}
-              loadingText={"Getting distance info"}
-              testId={"GET_DISTANCE_INFO_BUTTON"}
-              loading={distanceInfoLoading}
               action={distanceInfoAction}
-            />
+              testId={"GET_DISTANCE_INFO_BUTTON"}
+            >
+              {distanceInfoLoading ? "Getting distance info..." : "Get distance info"}
+            </GigServerActionButton>
             : null}
         </div>
       </div>
