@@ -50,8 +50,8 @@ export function FullGigUI(props: { row: EventRowJson }) {
     ((gig.startTime !== row.googleGig?.startDateTime)
       || (gig.endTime !== row.googleGig?.endDateTime));
 
-  const [distanceInfo, distanceInfoAction] = useActionState(getDistanceInfo, null)
-  console.log({distanceInfo})
+  const [fetchedDistanceInfo, distanceInfoAction] = useActionState(getDistanceInfo, null)
+  const finalDistanceInfo = fetchedDistanceInfo?.distanceInfo ?? gig.distanceInfo
   return (
     <div className="[&>*]:p-2">
       <FullGigHeader row={row} timeIsDifferent={timeIsDifferent} />
@@ -61,7 +61,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
       </ul>
 
       <div>
-        {/*{thisDistanceInfo ?? gig.distanceInfo ? <DistanceInfo info={thisDistanceInfo ?? gig.distanceInfo} /> : null}*/}
+        {finalDistanceInfo ? <DistanceInfo info={finalDistanceInfo} /> : null}
       </div>
 
       <div className={"flex justify-between"}>
@@ -79,7 +79,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
         <div className={"flex flex-col items-end"}>
           {!row.googleGig ? <SaveGigButton row={row} /> : null}
           {timeIsDifferent || row.hasUpdates ? <UpdateGigButton row={row} /> : null}
-          {!gig.distanceInfo ?
+          {!finalDistanceInfo ?
             <GigActionButton
               value={row.appGig}
               row={row}

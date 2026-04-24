@@ -6,7 +6,7 @@ import { EventsActionIntent } from "@/app/events/EventsActionIntent";
 
 export async function getDistanceInfo(_, formData: FormData) {
   const gigStr = formData.get('gig');
-  console.log({ gigStr })
+
   if (!gigStr || typeof gigStr !== 'string') {
     throw new Error('Gig param is missing or isn\'t a string')
   }
