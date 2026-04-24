@@ -1,33 +1,15 @@
-
 import { EventRowJson } from "@/lib/models/EventRow";
-import { FullDistanceInfoObj } from "@/lib/models/FullCalendarGig";
 import { DistanceInfo } from "@/app/events/components/DistanceInfo";
 import { FullGigHeader } from "@/app/events/components/FullGigHeader";
-import {
-  GetDistanceInfoButtonWithFetcher,
-  SaveGigButton,
-  UpdateGigButton
-} from "@/app/events/components/GigButtons";
+import { SaveGigButton, UpdateGigButton } from "@/app/events/components/GigButtons";
 import { GigPartUI } from "@/app/events/components/GigPartUI";
 // import { EventsActionIntent } from "@/app/events/EventsActionIntent";
 // import { useToggleParamValue } from "@/app/events/filters/useEventFilters";
 // import { useEventRouteFetchers } from "@/app/events/useEventRouteFetchers";
-import { useSearchParams } from "next/navigation";
 import { GigActionButton } from "@/app/events/components/GigActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
 import { useActionState } from "react";
 
-
-function addDistanceInfoToRow(row: EventRowJson, distanceInfo: FullDistanceInfoObj) {
-  return { ...row, appGig: { ...row.appGig, distanceInfo } } satisfies EventRowJson;
-}
-
-// function useFetchedDistanceInfo(row: EventRowJson) {
-//   const fetchers = useEventRouteFetchers();
-//   const thisDistanceInfo = fetchers[EventsActionIntent.getDistanceInfo]
-//     .find(f => f.data?.id === row.id);
-//   return thisDistanceInfo?.data.distanceInfo;
-// }
 
 // function useAlwaysShown(row: EventRowJson) {
 //   const toggleAlwaysShow = useToggleParamValue("alwaysShow");
@@ -38,8 +20,6 @@ function addDistanceInfoToRow(row: EventRowJson, distanceInfo: FullDistanceInfoO
 
 export function FullGigUI(props: { row: EventRowJson }) {
   const gig = props.row.appGig;
-  // const thisDistanceInfo = useFetchedDistanceInfo(props.row);
-  // const row = addDistanceInfoToRow(props.row, thisDistanceInfo ?? gig.distanceInfo);
   const row = props.row
   // const { toggleAlwaysShow, alwaysShown } = useAlwaysShown(row);
 
@@ -50,7 +30,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
     ((gig.startTime !== row.googleGig?.startDateTime)
       || (gig.endTime !== row.googleGig?.endDateTime));
 
-  const [fetchedDistanceInfo, distanceInfoAction] = useActionState(getDistanceInfo, null)
+  const [fetchedDistanceInfo, distanceInfoAction , distanceInfoLoading] = useActionState(getDistanceInfo, null)
   const finalDistanceInfo = fetchedDistanceInfo?.distanceInfo ?? gig.distanceInfo
   return (
     <div className="[&>*]:p-2">
@@ -79,6 +59,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
         <div className={"flex flex-col items-end"}>
           {!row.googleGig ? <SaveGigButton row={row} /> : null}
           {timeIsDifferent || row.hasUpdates ? <UpdateGigButton row={row} /> : null}
+
           {!finalDistanceInfo ?
             <GigActionButton
               value={row.appGig}
@@ -87,6 +68,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
               idleText={"Get distance info"}
               loadingText={"Getting distance info"}
               testId={"GET_DISTANCE_INFO_BUTTON"}
+              loading={distanceInfoLoading}
               action={distanceInfoAction}
             />
             : null}
