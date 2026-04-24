@@ -15,6 +15,7 @@ import { GigPartUI } from "@/app/events/components/GigPartUI";
 import { useSearchParams } from "next/navigation";
 import { GigActionButton } from "@/app/events/components/GigActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
+import { useActionState } from "react";
 
 
 function addDistanceInfoToRow(row: EventRowJson, distanceInfo: FullDistanceInfoObj) {
@@ -49,6 +50,8 @@ export function FullGigUI(props: { row: EventRowJson }) {
     ((gig.startTime !== row.googleGig?.startDateTime)
       || (gig.endTime !== row.googleGig?.endDateTime));
 
+  const [distanceInfo, distanceInfoAction] = useActionState(getDistanceInfo, null)
+  console.log({distanceInfo})
   return (
     <div className="[&>*]:p-2">
       <FullGigHeader row={row} timeIsDifferent={timeIsDifferent} />
@@ -84,12 +87,8 @@ export function FullGigUI(props: { row: EventRowJson }) {
               idleText={"Get distance info"}
               loadingText={"Getting distance info"}
               testId={"GET_DISTANCE_INFO_BUTTON"}
-              action={getDistanceInfo}
+              action={distanceInfoAction}
             />
-
-
-
-
             : null}
         </div>
       </div>

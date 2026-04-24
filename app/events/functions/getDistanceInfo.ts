@@ -4,11 +4,9 @@ import DistanceService from "@/lib/services/DistanceService";
 import { Reception } from "@/lib/models/GigParts/Reception";
 import { EventsActionIntent } from "@/app/events/EventsActionIntent";
 
-export async function getDistanceInfo(
-  _: unknown,
-  formData: FormData
-) {
+export async function getDistanceInfo(_, formData: FormData) {
   const gigStr = formData.get('gig');
+  console.log({ gigStr })
   if (!gigStr || typeof gigStr !== 'string') {
     throw new Error('Gig param is missing or isn\'t a string')
   }
@@ -30,7 +28,7 @@ export async function getDistanceInfo(
   await dummyGig.fetchDistanceInfo();
 
   const distanceInfo = dummyGig.getDistanceInfo();
-  console.log(distanceInfo);
+
   return {
     id: gigJson.id,
     distanceInfo,
