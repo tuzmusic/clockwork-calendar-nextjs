@@ -3,8 +3,13 @@ import FullCalendarGig, { FullCalendarGigJson } from "@/lib/models/FullCalendarG
 import DistanceService from "@/lib/services/DistanceService";
 import { Reception } from "@/lib/models/GigParts/Reception";
 import { EventsActionIntent } from "@/app/events/EventsActionIntent";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export async function getDistanceInfo(_: unknown, formData: FormData) {
+  const { userId } = await auth()
+  if (!userId) redirect('/sign-in')
+
   const gigStr = formData.get('gig');
 
   if (!gigStr || typeof gigStr !== 'string') {

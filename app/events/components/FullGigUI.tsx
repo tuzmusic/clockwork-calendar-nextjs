@@ -9,6 +9,8 @@ import { GigPartUI } from "@/app/events/components/GigPartUI";
 import { GigActionButton, GigServerActionButton } from "@/app/events/components/GigActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
 import { useActionState } from "react";
+import { updateGig } from "@/app/events/functions/calendarActions";
+import { FullDistanceInfoObj } from "@/lib/models/FullCalendarGig";
 
 
 // function useAlwaysShown(row: EventRowJson) {
@@ -17,6 +19,9 @@ import { useActionState } from "react";
 //   const alwaysShown = params.getAll("alwaysShow").includes(row.id);
 //   return { toggleAlwaysShow, alwaysShown };
 // }
+function addDistanceInfoToRow(row: EventRowJson, distanceInfo: FullDistanceInfoObj) {
+  return { ...row, appGig: { ...row.appGig, distanceInfo } } satisfies EventRowJson;
+}
 
 export function FullGigUI(props: { row: EventRowJson }) {
   const gig = props.row.appGig;
@@ -31,8 +36,10 @@ export function FullGigUI(props: { row: EventRowJson }) {
       || (gig.endTime !== row.googleGig?.endDateTime));
 
   const [fetchedDistanceInfo, distanceInfoAction, distanceInfoLoading] = useActionState(getDistanceInfo, null)
+  const [_, updateGigAction, updateGigLoading] = useActionState(updateGig, null)
 
   const finalDistanceInfo = fetchedDistanceInfo?.distanceInfo ?? gig.distanceInfo
+  const updatedRow = !finalDistanceInfo ? row : addDistanceInfoToRow(row, finalDistanceInfo)
 
   return (
     <div className="[&>*]:p-2">
@@ -60,7 +67,15 @@ export function FullGigUI(props: { row: EventRowJson }) {
 
         <div className={"flex flex-col items-end"}>
           {!row.googleGig ? <SaveGigButton row={row}/> : null}
-          {timeIsDifferent || row.hasUpdates ? <UpdateGigButton row={row}/> : null}
+          {timeIsDifferent || row.hasUpdates ?
+            <GigServerActionButton
+              row={updatedRow}
+              action={updateGigAction}
+              testId={"UPDATE_BUTTON"}
+            >
+              {updateGigLoading ? "Updating..." : "Update"}
+            </GigServerActionButton>
+            : null}
 
           {!finalDistanceInfo ?
             <GigServerActionButton

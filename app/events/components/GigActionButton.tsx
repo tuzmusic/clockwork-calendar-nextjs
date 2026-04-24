@@ -22,7 +22,7 @@ export function GigActionButton({
   // const { Form, state } = useFetcher();
 
   return (
-    <form method="post" id={row.id} action={action}>
+    <form method="POST" id={row.id} action={action}>
       <input type="hidden" name="gig" value={JSON.stringify(value)}/>
       <TextButton
         name="intent"
@@ -42,7 +42,7 @@ export function GigServerActionButton({ row, action, testId, children }: PropsWi
   testId?: string,
 }>) {
   return (
-    <form method="post" id={row.id} action={action}>
+    <form method="POST" id={row.id} action={action}>
       <input type="hidden" name="gig" value={JSON.stringify(row.appGig)}/>
       <TextButton {...testId && { "data-testid": testId }}      >
         {children}
