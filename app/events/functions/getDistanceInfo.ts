@@ -4,7 +4,7 @@ import DistanceService from "@/lib/services/DistanceService";
 import { Reception } from "@/lib/models/GigParts/Reception";
 import { EventsActionIntent } from "@/app/events/EventsActionIntent";
 
-export async function getDistanceInfo(_, formData: FormData) {
+export async function getDistanceInfo(_: unknown, formData: FormData) {
   const gigStr = formData.get('gig');
 
   if (!gigStr || typeof gigStr !== 'string') {

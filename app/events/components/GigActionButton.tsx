@@ -15,7 +15,7 @@ export function GigActionButton({
   loadingText: string
   testId?: string,
   value: object
-  action?: () => Promise<void>
+  action?: (f: FormData) => void
   loading?: boolean
 }) {
   // const { Form, state } = useFetcher();

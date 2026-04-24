@@ -64,7 +64,6 @@ export function FullGigUI(props: { row: EventRowJson }) {
             <GigActionButton
               value={row.appGig}
               row={row}
-              // intent={EventsActionIntent.getDistanceInfo}
               idleText={"Get distance info"}
               loadingText={"Getting distance info"}
               testId={"GET_DISTANCE_INFO_BUTTON"}
