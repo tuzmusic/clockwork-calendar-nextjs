@@ -1,13 +1,14 @@
 "use client"
 
-import React, { ComponentProps, useState } from "react";
+import React, { ComponentProps, useActionState, useState } from "react";
 
 import { EventRowJson } from "@/lib/models/EventRow";
 import { CalendarGigUI } from "@/app/events/components/CalendarGigUI";
 import { EmailHtml } from "@/app/events/components/EmailHtml";
 import { FullGigUI } from "@/app/events/components/FullGigUI";
-import { SaveGigButton } from "@/app/events/components/GigButtons";
 import { RoundedWrapper } from "@/app/events/components/RoundedWrapper";
+import { GigServerActionButton } from "@/app/events/components/GigActionButton";
+import { saveNewGig } from "@/app/events/functions/calendarActions";
 
 const MobileWrapper = (props: ComponentProps<typeof RoundedWrapper>) =>
   <RoundedWrapper className={`hidden sm:flex ${props.className ?? ""}`}>
@@ -22,13 +23,22 @@ function EmailGigCell({ row }: { row: EventRowJson }) {
 }
 
 function CalendarGigCell({ row }: { row: EventRowJson }) {
+  const [_, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
+
+
   return row.googleGig
     ? <CalendarGigUI row={row} hasUpdates={row.hasUpdates} />
     : (
       // we need these styles here for mobile,
       // which doesn't have the MobileWrapper styles below
       <div className={"flex h-full justify-center items-center"}>
-        <SaveGigButton row={row} />
+        <GigServerActionButton
+          row={row}
+          action={saveGigAction}
+          testId={"SAVE_BUTTON"}
+        >
+          {saveGigLoading ? "Saving..." : "Save"}
+        </GigServerActionButton>
       </div>
     );
 }
