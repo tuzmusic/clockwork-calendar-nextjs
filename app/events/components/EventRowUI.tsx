@@ -7,7 +7,7 @@ import { CalendarGigUI } from "@/app/events/components/CalendarGigUI";
 import { EmailHtml } from "@/app/events/components/EmailHtml";
 import { FullGigUI } from "@/app/events/components/FullGigUI";
 import { RoundedWrapper } from "@/app/events/components/RoundedWrapper";
-import { GigServerActionButton } from "@/app/events/components/GigActionButton";
+import { GigServerActionButton } from "@/app/events/components/GigServerActionButton";
 import { saveNewGig } from "@/app/events/functions/calendarActions";
 
 const MobileWrapper = (props: ComponentProps<typeof RoundedWrapper>) =>

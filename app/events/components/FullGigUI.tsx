@@ -1,15 +1,14 @@
 import { EventRowJson } from "@/lib/models/EventRow";
 import { DistanceInfo } from "@/app/events/components/DistanceInfo";
 import { FullGigHeader } from "@/app/events/components/FullGigHeader";
-import { SaveGigButton } from "@/app/events/components/GigButtons";
 import { GigPartUI } from "@/app/events/components/GigPartUI";
 // import { EventsActionIntent } from "@/app/events/EventsActionIntent";
 // import { useToggleParamValue } from "@/app/events/filters/useEventFilters";
 // import { useEventRouteFetchers } from "@/app/events/useEventRouteFetchers";
-import { GigServerActionButton } from "@/app/events/components/GigActionButton";
+import { GigServerActionButton } from "@/app/events/components/GigServerActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
 import { useActionState } from "react";
-import { updateGig } from "@/app/events/functions/calendarActions";
+import { saveNewGig, updateGig } from "@/app/events/functions/calendarActions";
 import { FullDistanceInfoObj } from "@/lib/models/FullCalendarGig";
 
 
@@ -36,7 +35,8 @@ export function FullGigUI(props: { row: EventRowJson }) {
       || (gig.endTime !== row.googleGig?.endDateTime));
 
   const [fetchedDistanceInfo, distanceInfoAction, distanceInfoLoading] = useActionState(getDistanceInfo, null)
-  const [_, updateGigAction, updateGigLoading] = useActionState(updateGig, null)
+  const [_u, updateGigAction, updateGigLoading] = useActionState(updateGig, null)
+  const [_s, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
 
   const finalDistanceInfo = fetchedDistanceInfo?.distanceInfo ?? gig.distanceInfo
   const updatedRow = !finalDistanceInfo ? row : addDistanceInfoToRow(row, finalDistanceInfo)
@@ -66,7 +66,13 @@ export function FullGigUI(props: { row: EventRowJson }) {
         </div>*/}
 
         <div className={"flex flex-col items-end w-full"}>
-          {!row.googleGig ? <SaveGigButton row={row}/> : null}
+          {!row.googleGig ? <GigServerActionButton
+            row={updatedRow}
+            action={saveGigAction}
+            testId={"SAVE_BUTTON"}
+          >
+            {saveGigLoading ? "Saving..." : "Save"}
+          </GigServerActionButton> : null}
           {timeIsDifferent || row.hasUpdates ?
             <GigServerActionButton
               row={updatedRow}
