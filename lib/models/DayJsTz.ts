@@ -10,7 +10,9 @@ dayjs.extend(utc);
 dayjs.extend(duration);
 
 export default function DayJsTz(dateString: string) {
-  const day = dayjs(dateString).tz(TIME_ZONE);
+  // dayjs.tz(str, tz) interprets a naive string directly as the given timezone,
+  // whereas dayjs(str).tz(tz) parses as local time first — wrong on non-ET servers/browsers.
+  const day = dayjs.tz(dateString, TIME_ZONE);
   if (day.format() === "Invalid Date") {
     throw new Error("Invalid date string passed to dayjs (through DateTime)");
   }
