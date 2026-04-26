@@ -53,7 +53,6 @@ export function EventRowUI({ row }: { row: EventRowJson }) {
   // useAlwaysShowSavedGig(row.id)
 
   const [selectedTab, setSelectedTab] = useState<keyof typeof TABS>("Full");
-  const MiddleComponent = TABS[selectedTab];
 
   return <React.Fragment key={row.id}>
     <MobileWrapper className={"bg-amber-500 sm:bg-amber-200"}>
@@ -62,16 +61,20 @@ export function EventRowUI({ row }: { row: EventRowJson }) {
 
     <div id="MiddleComponent-and-Tabs">
       <RoundedWrapper>
-        {
-          // Desktop always shows FullGig regardless of selected tab.
-          // hidden/sm:block (not invisible) so mobile container height
-          // is determined by the visible tab content, not this ghost copy.
-        }
         <div className="hidden sm:block">
           <FullGigUI row={row} />
         </div>
-        <div className="sm:hidden">
-          <MiddleComponent row={row} />
+        {/* All tabs share the same grid cell so container height = max of all tabs */}
+        <div className="sm:hidden grid grid-cols-1 grid-rows-1">
+          <div className={`col-start-1 row-start-1 ${selectedTab === "Email" ? "" : "invisible pointer-events-none"}`}>
+            <EmailGigCell row={row} />
+          </div>
+          <div className={`col-start-1 row-start-1 ${selectedTab === "Full" ? "" : "invisible pointer-events-none"}`}>
+            <FullGigUI row={row} />
+          </div>
+          <div className={`col-start-1 row-start-1 ${selectedTab === "Calendar" ? "" : "invisible pointer-events-none"}`}>
+            <CalendarGigCell row={row} />
+          </div>
         </div>
       </RoundedWrapper>
 
