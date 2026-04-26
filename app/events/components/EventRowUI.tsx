@@ -61,18 +61,16 @@ export function EventRowUI({ row }: { row: EventRowJson }) {
     </MobileWrapper>
 
     <div id="MiddleComponent-and-Tabs">
-      <RoundedWrapper className="relative">
+      <RoundedWrapper>
         {
-          // The sm:visible/hidden stuff here means that desktop will
-          // always only show the FullGig in the middle even if a different
-          // tab was selected when the screen was smaller.
-          // This does mean, however, that the other tab will still
-          // be selected when the screen gets smaller again.
+          // Desktop always shows FullGig regardless of selected tab.
+          // hidden/sm:block (not invisible) so mobile container height
+          // is determined by the visible tab content, not this ghost copy.
         }
-        <div className="invisible sm:visible">
+        <div className="hidden sm:block">
           <FullGigUI row={row} />
         </div>
-        <div className="w-full h-full absolute top-0 left-0 sm:hidden">
+        <div className="sm:hidden">
           <MiddleComponent row={row} />
         </div>
       </RoundedWrapper>
