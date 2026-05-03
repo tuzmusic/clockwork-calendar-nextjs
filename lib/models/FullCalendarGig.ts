@@ -159,7 +159,8 @@ export default class FullCalendarGig extends GigWithParts {
       googleId: this.googleId,
       distanceInfo: this._distanceInfo,
       startTime: this.getStartTime(),
-      endTime: this.getEndTime()
+      endTime: this.getEndTime(),
+      isNew: this.isNew,
     };
   }
 

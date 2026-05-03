@@ -13,7 +13,7 @@ export default class GmailService extends EmailService {
   }
 
   private emailData?: {
-    html: string, date: Date | undefined
+    html: string, date: Date | undefined, messageId: string
   };
 
   private get messageBody() {
@@ -22,6 +22,10 @@ export default class GmailService extends EmailService {
 
   private get messageDate() {
     return this.emailData?.date ?? null;
+  }
+
+  private get messageId() {
+    return this.emailData?.messageId ?? null;
   }
 
   public async getMessageBody(): Promise<string> {
@@ -35,8 +39,14 @@ export default class GmailService extends EmailService {
     if (!this.messageDate) {
       await this.getEmailData();
     }
-
     return this.messageDate;
+  }
+
+  public async getMessageId(): Promise<string | null> {
+    if (!this.messageId) {
+      await this.getEmailData();
+    }
+    return this.messageId;
   }
 
   public async getEmailData(): Promise<void> {
@@ -60,7 +70,7 @@ export default class GmailService extends EmailService {
     const html = atob(bodyData);
 
     this.emailData = {
-      date: messageDate, html
+      date: messageDate, html, messageId: firstMessageThatStartsAThread.id
     };
   }
 }

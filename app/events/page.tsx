@@ -8,7 +8,7 @@ import EmailParser from '@/lib/parsers/emailParser/EmailParser'
 import EmailGig from '@/lib/models/EmailGig'
 import GoogleGig from '@/lib/models/GoogleGig'
 import Schedule from '@/lib/models/Schedule'
-import { EventsTable } from './components/EventsTable'
+import { GigFilterLayout } from './components/GigFilterLayout'
 
 async function loadEvents() {
   const { userId } = await auth()
@@ -44,8 +44,9 @@ async function loadEvents() {
     }, distanceService)
 
     const eventRows = schedule.eventSets.map((row) => row.serialize());
+    const emailId = await gmailService.getMessageId();
 
-    return { eventRows, calendarId }
+    return { eventRows, calendarId, emailId }
   } catch (error) {
     console.error('Error loading events:', error)
     return {
@@ -76,7 +77,7 @@ export default async function EventsPage() {
           <p className="text-sm text-gray-500 mb-4">
             Calendar: {data.calendarId}
           </p>
-          <EventsTable eventRows={data.eventRows}/>
+          <GigFilterLayout eventRows={data.eventRows} emailId={data.emailId} />
         </div>
       </div>
     </div>
