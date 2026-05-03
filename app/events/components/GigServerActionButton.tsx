@@ -8,7 +8,7 @@ export function GigServerActionButton({ row, action, testId, children }: PropsWi
   testId?: string,
 }>) {
   return (
-    <form method="POST" id={row.id} action={action}>
+    <form id={row.id} action={action}>
       <input type="hidden" name="gig" value={JSON.stringify(row.appGig)}/>
       <TextButton {...testId && { "data-testid": testId }}      >
         {children}
