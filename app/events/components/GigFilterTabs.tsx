@@ -39,7 +39,7 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: Props) {
 
   return (
     <div
-      className="sticky top-0 z-10 flex gap-1 bg-gray-50 px-4 py-2 sm:hidden"
+      className="sticky top-0 z-10 flex gap-1 bg-inherit px-4 py-2 sm:hidden"
     >
       <div className="relative flex rounded-full bg-gray-200 p-1 gap-0">
         <div
