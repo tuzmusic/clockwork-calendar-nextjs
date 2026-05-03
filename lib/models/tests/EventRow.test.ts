@@ -5,7 +5,7 @@ import EmailGig from "@/lib/models/EmailGig";
 import EventRow from "@/lib/models/EventRow";
 import { Ceremony } from "@/lib/models/GigParts/Ceremony";
 import { CocktailHour } from "@/lib/models/GigParts/CocktailHour";
-import { GigPart, GigPartJSON } from "@/lib/models/GigParts/GigPart";
+import { GigPart } from "@/lib/models/GigParts/GigPart";
 import { Reception } from "@/lib/models/GigParts/Reception";
 import GoogleGig from "@/lib/models/GoogleGig";
 import {
@@ -14,7 +14,6 @@ import {
   end,
   location,
   mockDistanceData,
-  mockParts,
   mockReceptionJSONWithActual,
   mockReceptionPart,
   receptionEnd,
@@ -82,7 +81,6 @@ describe("EventRow", () => {
               extendedProperties: {
                 private: {
                   distanceInfo: JSON.stringify(mockDistanceData),
-                  parts: JSON.stringify(mockParts)
                 }
               }
             };
@@ -231,148 +229,89 @@ describe("EventRow", () => {
 
     describe("Events worth updating", () => {
       const updatedLocation = "somewhere else";
-
-      const ceremonyStart = "2024-12-01T17:30:00";
+      const ceremonyStartTime = "2024-12-01T17:30:00";
       const receptionLaterEnd = "2024-12-01T23:30:00";
 
-      const partsJSON: GigPartJSON[] = [
-        {
-          type: "cocktail hour",
-          startDateTime: cocktailStart,
-          endDateTime: cocktailEnd,
-          actualStartDateTime: cocktailStart,
-          actualEndDateTime: cocktailEnd
-        }, {
-          type: "reception",
-          startDateTime: receptionStart,
-          endDateTime: receptionEnd,
-          actualStartDateTime: receptionStart,
-          actualEndDateTime: receptionEnd
-        }
-      ];
-
-      const ceremonyPart = new Ceremony(ceremonyStart, cocktailStart);
+      const ceremonyPart = new Ceremony(ceremonyStartTime, cocktailStart);
       const cocktailHourPart = new CocktailHour(cocktailStart, cocktailEnd);
       const receptionPart = new Reception(cocktailEnd, receptionEnd);
 
-      const parts: GigPart[] = [
-        cocktailHourPart,
-        receptionPart
-      ];
+      const parts: GigPart[] = [cocktailHourPart, receptionPart];
 
-      describe("hasChanged", () => {
-        const calendarGig = GoogleGig.make({
-          start: { dateTime: receptionStart },
-          end: { dateTime: receptionEnd },
-          location,
-          extendedProperties: {
-            private: {
-              parts: JSON.stringify(partsJSON)
-            }
-          }
-        });
+      // Email start = cocktailStart (18:00), end = receptionEnd (21:00)
+      const matchingCalendarGig = GoogleGig.make({
+        start: { dateTime: cocktailStart },
+        end: { dateTime: receptionEnd },
+        location,
+      });
 
-        it("is false if there are no changes in parts or locations", () => {
+      describe("locationHasChanged", () => {
+        it("is false if locations match", () => {
           const emailGig = EmailGig.make(location, parts);
-          const row = EventRow.buildRow(emailGig, calendarGig, distanceService);
+          const row = EventRow.buildRow(emailGig, matchingCalendarGig, distanceService);
           expect(row.locationHasChanged).toBe(false);
-          expect(row.partsHaveChanged).toBe(false);
-          expect(row.hasChanged).toBe(false);
         });
 
-        it("is true if the two gigs have different locations", () => {
+        it("is true if locations differ", () => {
           const emailGig = EmailGig.make(updatedLocation, parts);
-          const row = EventRow.buildRow(emailGig, calendarGig, distanceService);
+          const row = EventRow.buildRow(emailGig, matchingCalendarGig, distanceService);
           expect(row.locationHasChanged).toBe(true);
-          expect(row.hasChanged).toBe(true);
         });
+      });
 
+      describe("timeHasChanged", () => {
+        it("is false if email and google times match", () => {
+          const emailGig = EmailGig.make(location, parts);
+          const row = EventRow.buildRow(emailGig, matchingCalendarGig, distanceService);
+          expect(row.timeHasChanged).toBe(false);
+        });
 
         it.each<[string, GigPart[]]>([
-          ["a single part has changed", [
+          ["the end time is later", [
             cocktailHourPart,
             new Reception(receptionStart, receptionLaterEnd)
           ]],
-          ["a part has been removed", [receptionPart]],
-          ["a part has been added", [ceremonyPart, ...parts]]
+          ["a part is removed (shifting the start time)", [receptionPart]],
+          ["a ceremony is added (shifting actual start earlier)", [ceremonyPart, ...parts]]
         ])("is true if %s", (_, emailParts) => {
           const emailGig = EmailGig.make(location, emailParts);
-          const row = EventRow.buildRow(emailGig, calendarGig, distanceService);
-          expect(row.partsHaveChanged).toBe(true);
-          expect(row.hasChanged).toBe(true);
+          const row = EventRow.buildRow(emailGig, matchingCalendarGig, distanceService);
+          expect(row.timeHasChanged).toBe(true);
         });
       });
 
       describe("hasUpdates", () => {
-        it("is false if the google gig has all the information (parts and distance data)", () => {
-          const calendarGig = GoogleGig.make({
-            start: { dateTime: receptionStart },
-            end: { dateTime: receptionEnd },
-            location,
-            extendedProperties: {
-              private: {
-                parts: JSON.stringify(partsJSON),
-                distanceInfo: JSON.stringify(mockDistanceData)
-              }
-            }
-          });
-
+        it("is false if times and location match with no distance info on either side", () => {
           const emailGig = EmailGig.make(location, parts);
-          const row = EventRow.buildRow(emailGig, calendarGig, distanceService);
+          const row = EventRow.buildRow(emailGig, matchingCalendarGig, distanceService);
           expect(row.hasUpdates).toBe(false);
         });
 
-        it("is true if hasChanged is true", () => {
-          const calendarGig = GoogleGig.make({
-            start: { dateTime: receptionStart },
-            end: { dateTime: receptionEnd },
-            location,
-            extendedProperties: {
-              private: {
-                parts: JSON.stringify(partsJSON),
-                distanceInfo: JSON.stringify(mockDistanceData)
-              }
-            }
-          });
-
-          const emailGig = EmailGig.make("somewhere else", parts);
-          const row = EventRow.buildRow(emailGig, calendarGig, distanceService);
+        it("is true if timeHasChanged", () => {
+          const emailGig = EmailGig.make(location, [new Reception(receptionStart, receptionLaterEnd)]);
+          const row = EventRow.buildRow(emailGig, matchingCalendarGig, distanceService);
           expect(row.hasUpdates).toBe(true);
         });
 
-        it("is true if google gig is missing parts", () => {
-          const calendarGig = GoogleGig.make({
-            start: { dateTime: receptionStart },
+        it("is true if locationHasChanged", () => {
+          const calendarGigWithDistance = GoogleGig.make({
+            start: { dateTime: cocktailStart },
             end: { dateTime: receptionEnd },
             location,
             extendedProperties: {
-              private: {
-                distanceInfo: JSON.stringify(mockDistanceData)
-              }
+              private: { distanceInfo: JSON.stringify(mockDistanceData) }
             }
           });
-
-          const emailGig = EmailGig.make(location, parts);
-          const row = EventRow.buildRow(emailGig, calendarGig, distanceService);
+          const emailGig = EmailGig.make(updatedLocation, parts);
+          const row = EventRow.buildRow(emailGig, calendarGigWithDistance, distanceService);
           expect(row.hasUpdates).toBe(true);
         });
 
         describe("google gig is missing distance info", () => {
           const it = test.extend<{ row: EventRow }>({
             row: async ({ task: _ }, use) => {
-              const calendarGig = GoogleGig.make({
-                start: { dateTime: receptionStart },
-                end: { dateTime: receptionEnd },
-                location,
-                extendedProperties: {
-                  private: {
-                    parts: JSON.stringify(partsJSON)
-                  }
-                }
-              });
-
               const emailGig = EmailGig.make(location, parts);
-              use(EventRow.buildRow(emailGig, calendarGig, distanceService));
+              use(EventRow.buildRow(emailGig, matchingCalendarGig, distanceService));
             }
           });
 

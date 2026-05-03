@@ -22,8 +22,9 @@ export default class EventRow {
       googleGig: this.googleGig?.serialize() ?? null,
       appGig: this.appGig.serialize(),
       id: this.id,
-      hasChanged: this.hasChanged,
-      hasUpdates: this.hasUpdates
+      hasUpdates: this.hasUpdates,
+      timeHasChanged: this.timeHasChanged,
+      locationHasChanged: this.locationHasChanged,
     };
   }
 
@@ -42,48 +43,28 @@ export default class EventRow {
   }
 
   public get locationHasChanged() {
-    return !this.locationsMatch;
+    return !!(this.googleGig && !this.locationsMatch);
   }
 
-  private get partsMatch() {
-    const emailParts = this.emailGig?.getParts().map(p => p.serialize());
-    const googleParts = this.googleGig?.getPartsJson();
-    return JSON.stringify(emailParts) === JSON.stringify(googleParts);
+  // Compares the email's computed start/end (accounting for ceremony early start, etc.)
+  // against the Google Calendar event's stored start/end. Both sides are timezone-normalized
+  // by SimpleGig's constructor, so the string comparison is safe.
+  private get timesMatch() {
+    return this.emailGig?.getStartTime() === this.googleGig?.getStartTime() &&
+      this.emailGig?.getEndTime() === this.googleGig?.getEndTime();
   }
 
-  public get partsHaveChanged() {
-    return !this.partsMatch;
+  public get timeHasChanged() {
+    return !!(this.googleGig && !this.timesMatch);
   }
-
 
   public get hasUpdates() {
     const { googleGig, appGig } = this;
-    if (this.hasChanged) return true;
+    if (!googleGig) return false;
 
-    // if the info hasn't changed, but the google gig is missing info,
-    // there's still reason to update the google event.
-    if (!googleGig?.getPartsJson()) {
-      return true;
-    }
-
-    if (!googleGig?.getDistanceInfo() && appGig.getDistanceInfo()) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private _hasChanged!: boolean;
-
-  public get hasChanged() {
-    if (this._hasChanged === undefined) {
-      this._hasChanged = !this.eventsAreIdentical;
-    }
-    return this._hasChanged;
-  }
-
-  private get eventsAreIdentical() {
-    return this.locationsMatch && this.partsMatch;
+    return this.timeHasChanged
+      || this.locationHasChanged
+      || (!googleGig.getDistanceInfo() && !!appGig.getDistanceInfo());
   }
 
   public static buildRow(emailGig: EmailGig, googleGig: GoogleGig, distanceService: DistanceService): EventRow
