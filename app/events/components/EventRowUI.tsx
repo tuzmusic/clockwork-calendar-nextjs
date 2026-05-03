@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useState } from "react";
+import { memo, useActionState, useState } from "react";
 
 import { EventRowJson } from "@/lib/models/EventRow";
 import { CalendarGigUI } from "@/app/events/components/CalendarGigUI";
@@ -47,7 +47,7 @@ function mobileHide(selectedTab: keyof typeof TABS, tab: keyof typeof TABS) {
     : "";
 }
 
-export function EventRowUI({ row }: { row: EventRowJson }) {
+export const EventRowUI = memo(function EventRowUI({ row }: { row: EventRowJson }) {
   const [selectedTab, setSelectedTab] = useState<keyof typeof TABS>("Full");
 
   return (
@@ -76,7 +76,7 @@ export function EventRowUI({ row }: { row: EventRowJson }) {
       </div>
     </div>
   );
-}
+})
 
 function Tab(props: { name: string, selected: boolean, onSelect: (name: string) => void }) {
   return <button type="button"

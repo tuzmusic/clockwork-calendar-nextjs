@@ -1,3 +1,5 @@
+"use client"
+
 import { EventRowJson } from "@/lib/models/EventRow";
 import { EventRowUI } from "@/app/events/components/EventRowUI";
 
