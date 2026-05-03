@@ -6,6 +6,7 @@ import FullCalendarGig, { FullCalendarGigJson } from "@/lib/models/FullCalendarG
 import { getGoogleAuthClient, getSelectedCalendarId } from "@/lib/google-auth";
 import GoogleCalendarService from "@/lib/services/GoogleCalendarService";
 import { revalidatePath } from "next/cache";
+import { invalidateEventCache } from "@/lib/event-cache";
 
 export const saveNewGig = makeCalendarAction('store')
 export const updateGig = makeCalendarAction('update')
@@ -32,6 +33,7 @@ function makeCalendarAction(intent: 'store' | 'update') {
       const calendarService = new GoogleCalendarService(calendarId, authClient)
       await gig[intent](calendarService);
 
+      await invalidateEventCache()
       revalidatePath('/events')
       return { success: true, id: gig.getId() };
     } catch (error) {

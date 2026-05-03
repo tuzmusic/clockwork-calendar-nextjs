@@ -5,46 +5,41 @@ import GmailService from '@/lib/services/GmailService'
 import GoogleCalendarService from '@/lib/services/GoogleCalendarService'
 import DistanceService from '@/lib/services/DistanceService'
 import EmailParser from '@/lib/parsers/emailParser/EmailParser'
-import EmailGig from '@/lib/models/EmailGig'
 import GoogleGig from '@/lib/models/GoogleGig'
 import Schedule from '@/lib/models/Schedule'
 import { GigFilterLayout } from './components/GigFilterLayout'
+import { readEventCache, writeEventCache } from '@/lib/event-cache'
 
 async function loadEvents() {
-  const { userId } = await auth()
-
-  if (!userId) {
-    redirect('/sign-in')
+  const cached = await readEventCache()
+  if (cached) {
+    return cached
   }
+
+  const { userId } = await auth()
+  if (!userId) redirect('/sign-in')
 
   const calendarId = await getSelectedCalendarId()
-
-  if (!calendarId) {
-    redirect('/select-calendar')
-  }
+  if (!calendarId) redirect('/select-calendar')
 
   try {
     const authClient = await getGoogleAuthClient()
 
-    // Fetch email and parse
     const gmailService = new GmailService(authClient)
     const emailHtml = await gmailService.getMessageBody()
     const emailGigs = EmailParser.parseEmail(emailHtml)
 
-    // Fetch calendar events
     const calendarService = new GoogleCalendarService(calendarId, authClient)
     const events = await calendarService.getEvents({ fromDate: new Date() })
     const googleGigs = events.map((event) => GoogleGig.make(event))
 
-    // Build schedule
     const distanceService = new DistanceService()
-    const schedule = Schedule.build({
-      emailGigs,
-      remoteGigs: googleGigs
-    }, distanceService)
+    const schedule = Schedule.build({ emailGigs, remoteGigs: googleGigs }, distanceService)
 
-    const eventRows = schedule.eventSets.map((row) => row.serialize());
-    const emailId = await gmailService.getMessageId();
+    const eventRows = schedule.eventSets.map((row) => row.serialize())
+    const emailId = await gmailService.getMessageId()
+
+    await writeEventCache({ eventRows, calendarId, emailId })
 
     return { eventRows, calendarId, emailId }
   } catch (error) {
