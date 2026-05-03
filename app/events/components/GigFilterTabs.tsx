@@ -27,8 +27,14 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: TabsProps) 
   const activeRef = useRef<HTMLButtonElement>(null)
   const highlightRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
   useLayoutEffect(() => {
     if (activeRef.current && highlightRef.current && containerRef.current) {
+      // we highlight the active tab during SSR, and once this effect runs
+      // we remove that highlight. the absolute-positioned highlight remains
+      // and we use this effect to animate its position.
+      activeRef.current.style.background = "transparent"
+      activeRef.current.style.boxShadow = "none"
       const buttonRect = activeRef.current.getBoundingClientRect()
       const containerRect = containerRef.current.getBoundingClientRect()
       highlightRef.current.style.left = `${buttonRect.left - containerRect.left}px`
@@ -53,7 +59,7 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: TabsProps) 
               ref={activeTab === key ? activeRef : null}
               type="button"
               onClick={() => onTabChange(key)}
-              className="relative rounded-full px-4 py-1 text-sm font-medium transition-colors duration-200"
+              className={`relative rounded-full px-4 py-1 text-sm font-medium transition-colors duration-200 ${activeTab === key ? "bg-white shadow" : ""}`}
             >
               {label}{" "}
               <span className={count === undefined ? "invisible" : ""}>
