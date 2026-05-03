@@ -20,7 +20,7 @@ function CalendarGigCell({ row }: { row: EventRowJson }) {
   const [_, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
 
   return row.googleGig
-    ? <CalendarGigUI row={row} hasUpdates={row.hasUpdates} />
+    ? <CalendarGigUI row={row} />
     : (
       // flex styles needed here since the outer cell isn't flex on mobile
       <div className={"flex h-full justify-center items-center"}>
