@@ -26,11 +26,13 @@ const TABS: { key: FilterTab; label: string }[] = [
 export function MobileFilterTabs({ activeTab, counts, onTabChange }: TabsProps) {
   const activeRef = useRef<HTMLButtonElement>(null)
   const highlightRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
-    if (activeRef.current && highlightRef.current) {
-      const button = activeRef.current
-      highlightRef.current.style.left = `${button.offsetLeft}px`
-      highlightRef.current.style.width = `${button.offsetWidth}px`
+    if (activeRef.current && highlightRef.current && containerRef.current) {
+      const buttonRect = activeRef.current.getBoundingClientRect()
+      const containerRect = containerRef.current.getBoundingClientRect()
+      highlightRef.current.style.left = `${buttonRect.left - containerRect.left}px`
+      highlightRef.current.style.width = `${buttonRect.width}px`
     }
   }, [activeTab])
 
@@ -38,7 +40,7 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: TabsProps) 
     <div
       className="sticky top-0 z-10 flex gap-1 bg-inherit px-4 py-2 sm:hidden"
     >
-      <div className="relative flex rounded-full bg-gray-200 p-1 gap-0">
+      <div ref={containerRef} className="relative flex rounded-full bg-gray-200 p-1 gap-0">
         <div
           ref={highlightRef}
           className="absolute top-1 bottom-1 rounded-full bg-white shadow transition-all duration-200 ease-in-out"
