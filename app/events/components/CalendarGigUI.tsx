@@ -1,7 +1,7 @@
 import DayJsTz from "@/lib/models/DayJsTz";
 import { EventRowJson } from "@/lib/models/EventRow";
 
-export function CalendarGigUI({ row }: { row: EventRowJson, hasUpdates: boolean }) {
+export function CalendarGigUI({ row }: { row: EventRowJson }) {
   const gig = row.googleGig;
   if (!gig) return null;
 
@@ -19,8 +19,8 @@ export function CalendarGigUI({ row }: { row: EventRowJson, hasUpdates: boolean 
           <span className="font-bold">{date}</span>
           {displayTitle ? <span>{displayTitle}</span> : null}
         </li>
-        <li>{gig.location}</li>
-        <li>{start}-{end}</li>
+        <li className={row.locationHasChanged ? "text-red-700" : ""}>{gig.location}</li>
+        <li className={row.timeHasChanged ? "text-red-700" : ""}>{start}-{end}</li>
       </ul>
     </div>
   );

@@ -3,10 +3,7 @@ import dayjs from "dayjs";
 import DayJsTz from "@/lib/models/DayJsTz";
 import { EventRowJson } from "@/lib/models/EventRow";
 
-export function FullGigHeader({ row, ...props }: {
-  row: EventRowJson
-  timeIsDifferent: null | boolean,
-}) {
+export function FullGigHeader({ row }: { row: EventRowJson }) {
   const gig = row.appGig;
   const date = dayjs(gig.parts[0].startDateTime).format("MMMM D, YYYY");
   const [startTime, endTime] = [gig.startTime, gig.endTime].map(t => DayJsTz(t).format("h:mma"));
@@ -20,9 +17,9 @@ export function FullGigHeader({ row, ...props }: {
         <span>{date}</span>
         {!row.googleGig ? <span className={"text-green-500"}>{" "}NEW</span> : null}
       </div>
-      <div className={props.timeIsDifferent ? "text-red-700" : ""}>{startTime}-{endTime}</div>
+      <div className={row.timeHasChanged ? "text-red-700" : ""}>{startTime}-{endTime}</div>
     </div>
-    <div className="text-right">
+    <div className={`text-right${row.locationHasChanged ? " text-red-700" : ""}`}>
       <div>{venue}</div>
       <div>{location}</div>
     </div>
