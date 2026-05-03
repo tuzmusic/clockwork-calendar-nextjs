@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useDeferredValue, useMemo, useState } from "react"
 import { EventRowJson } from "@/lib/models/EventRow"
 import { EventsTable } from "@/app/events/components/EventsTable"
 import { DesktopFilterTabs, FilterTab, MobileFilterTabs } from "@/app/events/components/GigFilterTabs"
@@ -15,17 +15,21 @@ export function GigFilterLayout({ eventRows, emailId }: Props) {
   const [activeTab, setActiveTab] = useState<FilterTab>("all")
   const snapshot = useGigSnapshot(eventRows, emailId)
 
+
   const counts = {
     new: snapshot?.newIds.length ?? 0,
     updated: snapshot?.updatedIds.length ?? 0,
     all: eventRows.length,
   }
 
-  const filteredRows = (() => {
+  const filteredRows = useMemo(() => {
     if (!snapshot || activeTab === "all") return eventRows
     if (activeTab === "new") return eventRows.filter(r => snapshot.newIds.includes(r.id))
-    return eventRows.filter(r => snapshot.updatedIds.includes(r.id))
-  })()
+    if (activeTab === "updated") return eventRows.filter(r => snapshot.updatedIds.includes(r.id))
+    return eventRows
+  }, [activeTab,  snapshot])
+
+  const rows = useDeferredValue(filteredRows, eventRows)
 
   const tabProps = { activeTab, counts, onTabChange: setActiveTab }
 
@@ -36,7 +40,7 @@ export function GigFilterLayout({ eventRows, emailId }: Props) {
       <div className="flex gap-4 items-start">
         <DesktopFilterTabs {...tabProps} />
         <div className="flex-1">
-          <EventsTable eventRows={filteredRows} />
+          <EventsTable eventRows={rows} />
         </div>
       </div>
     </>
