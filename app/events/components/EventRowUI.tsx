@@ -52,7 +52,7 @@ export const EventRowUI = memo(function EventRowUI({ row }: { row: EventRowJson 
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 items-start">
-      <RoundedWrapper className={`col-start-1 row-start-1 sm:col-auto sm:row-auto sm:flex bg-amber-500 sm:bg-amber-200 ${mobileHide(selectedTab, "Email")}`}>
+      <RoundedWrapper className={`col-start-1 row-start-1 sm:col-auto sm:row-auto sm:flex ${mobileHide(selectedTab, "Email")}`}>
         <EmailGigCell row={row} />
       </RoundedWrapper>
 
@@ -60,7 +60,7 @@ export const EventRowUI = memo(function EventRowUI({ row }: { row: EventRowJson 
         <FullGigUI row={row} />
       </RoundedWrapper>
 
-      <RoundedWrapper className={`col-start-1 row-start-1 sm:col-auto sm:row-auto sm:flex bg-blue-600 sm:bg-blue-200 w-full ${row.googleGig ? "sm:justify-end" : "sm:justify-center sm:items-center"} ${mobileHide(selectedTab, "Calendar")}`}>
+      <RoundedWrapper className={`col-start-1 row-start-1 sm:col-auto sm:row-auto sm:flex w-full ${row.googleGig ? "sm:justify-end" : "sm:justify-center sm:items-center"} ${mobileHide(selectedTab, "Calendar")}`}>
         <CalendarGigCell row={row} />
       </RoundedWrapper>
 
