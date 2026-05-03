@@ -5,12 +5,12 @@ import { useLayoutEffect, useRef } from "react"
 export type FilterTab = "new" | "updated" | "all"
 
 interface TabCounts {
-  new: number
-  updated: number
+  new: number | undefined
+  updated: number | undefined
   all: number
 }
 
-interface Props {
+interface TabsProps {
   activeTab: FilterTab
   counts: TabCounts
   onTabChange: (tab: FilterTab) => void
@@ -23,7 +23,7 @@ const TABS: { key: FilterTab; label: string }[] = [
 ]
 
 // Mobile: horizontal sticky pill tabs with sliding highlight
-export function MobileFilterTabs({ activeTab, counts, onTabChange }: Props) {
+export function MobileFilterTabs({ activeTab, counts, onTabChange }: TabsProps) {
   const activeRef = useRef<HTMLButtonElement>(null)
   const highlightRef = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
@@ -43,24 +43,30 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: Props) {
           ref={highlightRef}
           className="absolute top-1 bottom-1 rounded-full bg-white shadow transition-all duration-200 ease-in-out"
         />
-        {TABS.map(({ key, label }) => (
-          <button
-            key={key}
-            ref={activeTab === key ? activeRef : null}
-            type="button"
-            onClick={() => onTabChange(key)}
-            className="relative rounded-full px-4 py-1 text-sm font-medium transition-colors duration-200"
-          >
-            {label} ({counts[key]})
-          </button>
-        ))}
+        {TABS.map(({ key, label }) => {
+          let str = label
+          if (counts[key] !== undefined) {
+            str += ` (${counts[key]})`
+          }
+          return (
+            <button
+              key={key}
+              ref={activeTab === key ? activeRef : null}
+              type="button"
+              onClick={() => onTabChange(key)}
+              className="relative rounded-full px-4 py-1 text-sm font-medium transition-colors duration-200"
+            >
+              {str}
+            </button>
+          );
+        })}
       </div>
     </div>
   )
 }
 
 // Desktop: vertical sidebar menu with rectangular highlight
-export function DesktopFilterTabs({ activeTab, counts, onTabChange }: Props) {
+export function DesktopFilterTabs({ activeTab, counts, onTabChange }: TabsProps) {
   return (
     <nav className="hidden sm:flex flex-col w-40 shrink-0 gap-1">
       {TABS.map(({ key, label }) => (

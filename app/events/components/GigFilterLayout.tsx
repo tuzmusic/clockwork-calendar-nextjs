@@ -17,8 +17,8 @@ export function GigFilterLayout({ eventRows, emailId }: Props) {
 
 
   const counts = {
-    new: snapshot?.newIds.length ?? 0,
-    updated: snapshot?.updatedIds.length ?? 0,
+    new: snapshot?.newIds.length,
+    updated: snapshot?.updatedIds.length,
     all: eventRows.length,
   }
 
