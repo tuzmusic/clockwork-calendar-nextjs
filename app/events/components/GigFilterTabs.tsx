@@ -44,10 +44,7 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: TabsProps) 
           className="absolute top-1 bottom-1 rounded-full bg-white shadow transition-all duration-200 ease-in-out"
         />
         {TABS.map(({ key, label }) => {
-          let str = label
-          if (counts[key] !== undefined) {
-            str += ` (${counts[key]})`
-          }
+          const count = counts[key]
           return (
             <button
               key={key}
@@ -56,7 +53,10 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: TabsProps) 
               onClick={() => onTabChange(key)}
               className="relative rounded-full px-4 py-1 text-sm font-medium transition-colors duration-200"
             >
-              {str}
+              {label}{" "}
+              <span className={count === undefined ? "invisible" : ""}>
+                ({count ?? 0})
+              </span>
             </button>
           );
         })}
@@ -80,7 +80,10 @@ export function DesktopFilterTabs({ activeTab, counts, onTabChange }: TabsProps)
               : "text-gray-600 hover:bg-gray-100"
           }`}
         >
-          {label} ({counts[key]})
+          {label}{" "}
+          <span className={counts[key] === undefined ? "invisible" : ""}>
+            ({counts[key] ?? 0})
+          </span>
         </button>
       ))}
     </nav>
