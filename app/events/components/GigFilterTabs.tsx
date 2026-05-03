@@ -19,29 +19,26 @@ interface Props {
 const TABS: { key: FilterTab; label: string }[] = [
   { key: "new", label: "New" },
   { key: "updated", label: "Updated" },
-  { key: "all", label: "All" },
+  { key: "all", label: "All" }
 ]
 
 // Mobile: horizontal sticky pill tabs with sliding highlight
 export function MobileFilterTabs({ activeTab, counts, onTabChange }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef<HTMLButtonElement>(null)
   const [highlightStyle, setHighlightStyle] = useState({ left: 0, width: 0 })
 
   useEffect(() => {
-    if (activeRef.current && containerRef.current) {
-      const containerLeft = containerRef.current.getBoundingClientRect().left
-      const btnRect = activeRef.current.getBoundingClientRect()
+    if (activeRef.current) {
+      const btnRect = activeRef.current
       setHighlightStyle({
-        left: btnRect.left - containerLeft,
-        width: btnRect.width,
+        left: btnRect.offsetLeft,
+        width: btnRect.offsetWidth
       })
     }
   }, [activeTab])
 
   return (
     <div
-      ref={containerRef}
       className="sticky top-0 z-10 flex gap-1 bg-gray-50 px-4 py-2 sm:hidden"
     >
       <div className="relative flex rounded-full bg-gray-200 p-1 gap-0">
@@ -55,7 +52,7 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: Props) {
             ref={activeTab === key ? activeRef : null}
             type="button"
             onClick={() => onTabChange(key)}
-            className="relative z-10 rounded-full px-4 py-1 text-sm font-medium transition-colors duration-200"
+            className="relative rounded-full px-4 py-1 text-sm font-medium transition-colors duration-200"
           >
             {label} ({counts[key]})
           </button>
