@@ -33,10 +33,9 @@ export function GigFilterLayout({ eventRows, emailId }: Props) {
     <>
       <MobileFilterTabs {...tabProps} />
 
-      <div className="flex gap-4 overflow-hidden" style={{ height: "calc(100vh - 220px)" }}>
+      <div className="flex gap-4 items-start">
         <DesktopFilterTabs {...tabProps} />
-
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1">
           <EventsTable eventRows={filteredRows} />
         </div>
       </div>
