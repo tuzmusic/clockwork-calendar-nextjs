@@ -51,7 +51,7 @@ export function EventRowUI({ row }: { row: EventRowJson }) {
   const [selectedTab, setSelectedTab] = useState<keyof typeof TABS>("Full");
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start">
+    <div className="grid grid-cols-1 sm:grid-cols-3 items-start">
       <RoundedWrapper className={`col-start-1 row-start-1 sm:col-auto sm:row-auto sm:flex bg-amber-500 sm:bg-amber-200 ${mobileHide(selectedTab, "Email")}`}>
         <EmailGigCell row={row} />
       </RoundedWrapper>
