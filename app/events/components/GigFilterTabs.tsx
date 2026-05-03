@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useLayoutEffect, useRef } from "react"
 
 export type FilterTab = "new" | "updated" | "all"
 
@@ -25,15 +25,12 @@ const TABS: { key: FilterTab; label: string }[] = [
 // Mobile: horizontal sticky pill tabs with sliding highlight
 export function MobileFilterTabs({ activeTab, counts, onTabChange }: Props) {
   const activeRef = useRef<HTMLButtonElement>(null)
-  const [highlightStyle, setHighlightStyle] = useState({ left: 0, width: 0 })
-
-  useEffect(() => {
-    if (activeRef.current) {
-      const btnRect = activeRef.current
-      setHighlightStyle({
-        left: btnRect.offsetLeft,
-        width: btnRect.offsetWidth
-      })
+  const highlightRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    if (activeRef.current && highlightRef.current) {
+      const button = activeRef.current
+      highlightRef.current.style.left = `${button.offsetLeft}px`
+      highlightRef.current.style.width = `${button.offsetWidth}px`
     }
   }, [activeTab])
 
@@ -43,8 +40,8 @@ export function MobileFilterTabs({ activeTab, counts, onTabChange }: Props) {
     >
       <div className="relative flex rounded-full bg-gray-200 p-1 gap-0">
         <div
+          ref={highlightRef}
           className="absolute top-1 bottom-1 rounded-full bg-white shadow transition-all duration-200 ease-in-out"
-          style={{ left: highlightStyle.left, width: highlightStyle.width }}
         />
         {TABS.map(({ key, label }) => (
           <button
