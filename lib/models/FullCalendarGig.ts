@@ -164,15 +164,36 @@ export default class FullCalendarGig extends GigWithParts {
     };
   }
 
+  private buildDescription(): string {
+    const lines: string[] = [];
+    for (const part of this.getParts()) {
+      const start = dayjs(part.startDateTime).format("h:mma");
+      const end = dayjs(part.endDateTime).format("h:mma");
+      const label = part.type.split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+      lines.push(`${label}: ${start} – ${end}`);
+    }
+    const info = this._distanceInfo;
+    if (info) {
+      lines.push('');
+      lines.push(`From home: ${info.fromHome.formattedTime} (${info.fromHome.miles}mi)`);
+      lines.push(`Via Waltham St: ${info.withWaltham.formattedTime} (${info.withWaltham.miles}mi)`);
+      lines.push(`Waltham detour: +${info.walthamDetour.formattedTime} (+${info.walthamDetour.miles}mi)`);
+      lines.push(`From Waltham St: ${info.fromWaltham.formattedTime} (${info.fromWaltham.miles}mi)`);
+    }
+    return lines.join('\n');
+  }
+
   private makePayload() {
     const payload = {
       location: this.location,
       summary: this.getEventTitle(),
+      description: this.buildDescription(),
       start: timeObj(this.getStartTime()),
       end: timeObj(this.getEndTime()),
       extendedProperties: {
         private: {
-          distanceInfo: JSON.stringify(this.getDistanceInfo())
+          distanceInfo: JSON.stringify(this.getDistanceInfo()),
+          parts: JSON.stringify(this.getPartsJson()),
         }
       }
     };
