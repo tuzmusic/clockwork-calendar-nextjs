@@ -1,4 +1,5 @@
 import { DistanceData } from "@/lib/models/types";
+import { FullDistanceInfoObj } from "@/lib/models/FullCalendarGig";
 
 const distanceKeysTable = {
   fromHome: 'From Home',
@@ -8,13 +9,12 @@ const distanceKeysTable = {
   fromBoston: '',
 }
 
-export function DistanceInfo({ info }: { info: Record<string, DistanceData> }) {
-  const displayDistances = [
-    'fromHome',
-    'withWaltham',
-    'walthamDetour',
-    'fromWaltham'
-  ] satisfies (keyof typeof distanceKeysTable)[]
+const walthamKeys = ['withWaltham', 'walthamDetour', 'fromWaltham'] satisfies (keyof typeof distanceKeysTable)[];
+
+export function DistanceInfo({ info }: { info: FullDistanceInfoObj }) {
+  const displayDistances = (
+    ['fromHome', ...(!info.isNorthOfHome ? walthamKeys : [])]
+  ) satisfies (keyof typeof distanceKeysTable)[];
 
   return (
     <div className="text-sm">
