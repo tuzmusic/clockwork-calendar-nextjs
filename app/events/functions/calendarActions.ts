@@ -11,6 +11,24 @@ import { invalidateEventCache } from "@/lib/event-cache";
 export const saveNewGig = makeCalendarAction('store')
 export const updateGig = makeCalendarAction('update')
 
+export async function bulkFetchAndSaveDistances(gigJsons: FullCalendarGigJson[]) {
+  const { userId } = await auth()
+  if (!userId) redirect('/sign-in')
+  const calendarId = await getSelectedCalendarId()
+  if (!calendarId) redirect('/select-calendar')
+  const authClient = await getGoogleAuthClient()
+  const calendarService = new GoogleCalendarService(calendarId, authClient)
+
+  for (const gigJson of gigJsons) {
+    const gig = FullCalendarGig.deserialize(gigJson)
+    await gig.fetchDistanceInfo()
+    await gig.update(calendarService)
+  }
+
+  await invalidateEventCache()
+  revalidatePath('/events')
+}
+
 function makeCalendarAction(intent: 'store' | 'update') {
   return async function (_: unknown, formData: FormData) {
     const { userId } = await auth()

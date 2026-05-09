@@ -5,6 +5,7 @@ import { EventRowJson } from "@/lib/models/EventRow"
 import { EventsTable } from "@/app/events/components/EventsTable"
 import { DesktopFilterTabs, FilterTab, MobileFilterTabs } from "@/app/events/components/GigFilterTabs"
 import { useGigSnapshot } from "@/app/events/hooks/useGigSnapshot"
+import { useBulkDistanceFetch } from "@/app/events/hooks/useBulkDistanceFetch"
 
 interface Props {
   eventRows: EventRowJson[]
@@ -16,6 +17,7 @@ export function GigFilterLayout({ eventRows, emailId }: Props) {
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
   const onGigSaved = useCallback((id: string) => setSavedIds(prev => new Set([...prev, id])), [])
   const snapshot = useGigSnapshot(eventRows, emailId)
+  const { isFetching, pendingCount } = useBulkDistanceFetch(eventRows)
 
 
   const counts = {
@@ -38,6 +40,12 @@ export function GigFilterLayout({ eventRows, emailId }: Props) {
   return (
     <>
       <MobileFilterTabs {...tabProps} />
+
+      {isFetching && (
+        <p className="text-sm text-gray-500 px-2 py-1">
+          Fetching distances for {pendingCount} gig{pendingCount === 1 ? '' : 's'}...
+        </p>
+      )}
 
       <div className="flex gap-4 items-start">
         <DesktopFilterTabs {...tabProps} />
