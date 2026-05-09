@@ -1,6 +1,6 @@
 "use client"
 
-import { useDeferredValue, useMemo, useState } from "react"
+import { useCallback, useDeferredValue, useMemo, useState } from "react"
 import { EventRowJson } from "@/lib/models/EventRow"
 import { EventsTable } from "@/app/events/components/EventsTable"
 import { DesktopFilterTabs, FilterTab, MobileFilterTabs } from "@/app/events/components/GigFilterTabs"
@@ -13,6 +13,8 @@ interface Props {
 
 export function GigFilterLayout({ eventRows, emailId }: Props) {
   const [activeTab, setActiveTab] = useState<FilterTab>("all")
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
+  const onGigSaved = useCallback((id: string) => setSavedIds(prev => new Set([...prev, id])), [])
   const snapshot = useGigSnapshot(eventRows, emailId)
 
 
@@ -40,7 +42,7 @@ export function GigFilterLayout({ eventRows, emailId }: Props) {
       <div className="flex gap-4 items-start">
         <DesktopFilterTabs {...tabProps} />
         <div className="flex-1">
-          <EventsTable eventRows={rows} />
+          <EventsTable eventRows={rows} savedIds={savedIds} onGigSaved={onGigSaved} />
         </div>
       </div>
     </>

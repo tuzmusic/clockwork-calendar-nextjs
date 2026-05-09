@@ -3,7 +3,11 @@
 import { EventRowJson } from "@/lib/models/EventRow";
 import { EventRowUI } from "@/app/events/components/EventRowUI";
 
-export function EventsTable({ eventRows }: { eventRows: EventRowJson[] }) {
+export function EventsTable({ eventRows, savedIds, onGigSaved }: {
+  eventRows: EventRowJson[]
+  savedIds: Set<string>
+  onGigSaved: (id: string) => void
+}) {
   return (
     <div data-testid="EVENTS_TABLE" className="grid items-start gap-3">
       <div className={
@@ -15,7 +19,14 @@ export function EventsTable({ eventRows }: { eventRows: EventRowJson[] }) {
         <h2 className="text-right">Calendar</h2>
       </div>
 
-      {eventRows.map((row) => <EventRowUI row={row} key={row.id} />)}
+      {eventRows.map((row) => (
+        <EventRowUI
+          row={row}
+          key={row.id}
+          isSavedThisSession={savedIds.has(row.id)}
+          onGigSaved={onGigSaved}
+        />
+      ))}
     </div>
   );
 }

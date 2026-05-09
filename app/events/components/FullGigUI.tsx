@@ -4,7 +4,7 @@ import { FullGigHeader } from "@/app/events/components/FullGigHeader";
 import { GigPartUI } from "@/app/events/components/GigPartUI";
 import { GigServerActionButton } from "@/app/events/components/GigServerActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { saveNewGig, updateGig } from "@/app/events/functions/calendarActions";
 import { FullDistanceInfoObj } from "@/lib/models/FullCalendarGig";
 
@@ -13,20 +13,24 @@ function addDistanceInfoToRow(row: EventRowJson, distanceInfo: FullDistanceInfoO
   return { ...row, appGig: { ...row.appGig, distanceInfo } } satisfies EventRowJson;
 }
 
-export function FullGigUI(props: { row: EventRowJson }) {
-  const gig = props.row.appGig;
-  const row = props.row
+export function FullGigUI(props: { row: EventRowJson, isSavedThisSession?: boolean, onGigSaved?: (id: string) => void }) {
+  const { row, isSavedThisSession, onGigSaved } = props;
+  const gig = row.appGig;
 
   const [fetchedDistanceInfo, distanceInfoAction, distanceInfoLoading] = useActionState(getDistanceInfo, null)
   const [_u, updateGigAction, updateGigLoading] = useActionState(updateGig, null)
-  const [_s, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
+  const [saveResult, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
+
+  useEffect(() => {
+    if (saveResult?.success) onGigSaved?.(row.id);
+  }, [saveResult]);
 
   const finalDistanceInfo = fetchedDistanceInfo?.distanceInfo ?? gig.distanceInfo
   const updatedRow = !finalDistanceInfo ? row : addDistanceInfoToRow(row, finalDistanceInfo)
 
   return (
     <div className="*:p-2">
-      <FullGigHeader row={row}/>
+      <FullGigHeader row={row} isSavedThisSession={isSavedThisSession}/>
 
       <ul>
         {gig.parts.map(part => <GigPartUI key={part.type} part={part}/>)}

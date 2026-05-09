@@ -1,6 +1,6 @@
 "use client"
 
-import { memo, useActionState, useState } from "react";
+import { memo, useActionState, useEffect, useState } from "react";
 
 import { EventRowJson } from "@/lib/models/EventRow";
 import { CalendarGigUI } from "@/app/events/components/CalendarGigUI";
@@ -16,8 +16,12 @@ function EmailGigCell({ row }: { row: EventRowJson }) {
   return row.emailGig ? <EmailHtml gig={row.emailGig} /> : null;
 }
 
-function CalendarGigCell({ row }: { row: EventRowJson }) {
-  const [_, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
+function CalendarGigCell({ row, onGigSaved }: { row: EventRowJson, onGigSaved: (id: string) => void }) {
+  const [saveResult, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
+
+  useEffect(() => {
+    if (saveResult?.success) onGigSaved(row.id);
+  }, [saveResult]);
 
   return row.googleGig
     ? <CalendarGigUI row={row} />
@@ -47,7 +51,11 @@ function mobileHide(selectedTab: keyof typeof TABS, tab: keyof typeof TABS) {
     : "";
 }
 
-export const EventRowUI = memo(function EventRowUI({ row }: { row: EventRowJson }) {
+export const EventRowUI = memo(function EventRowUI({ row, isSavedThisSession, onGigSaved }: {
+  row: EventRowJson
+  isSavedThisSession: boolean
+  onGigSaved: (id: string) => void
+}) {
   const [selectedTab, setSelectedTab] = useState<keyof typeof TABS>("Full");
 
   return (
@@ -57,11 +65,11 @@ export const EventRowUI = memo(function EventRowUI({ row }: { row: EventRowJson 
       </RoundedWrapper>
 
       <RoundedWrapper className={`col-start-1 row-start-1 sm:col-auto sm:row-auto ${mobileHide(selectedTab, "Full")}`}>
-        <FullGigUI row={row} />
+        <FullGigUI row={row} isSavedThisSession={isSavedThisSession} onGigSaved={onGigSaved} />
       </RoundedWrapper>
 
       <RoundedWrapper className={`col-start-1 row-start-1 sm:col-auto sm:row-auto sm:flex w-full ${row.googleGig ? "sm:justify-end" : "sm:justify-center sm:items-center"} ${mobileHide(selectedTab, "Calendar")}`}>
-        <CalendarGigCell row={row} />
+        <CalendarGigCell row={row} onGigSaved={onGigSaved} />
       </RoundedWrapper>
 
       <div className="col-start-1 row-start-2 w-fit overflow-hidden ml-4 rounded-b-lg border-black border-t-0 sm:hidden">

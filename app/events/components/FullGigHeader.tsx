@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import DayJsTz from "@/lib/models/DayJsTz";
 import { EventRowJson } from "@/lib/models/EventRow";
 
-export function FullGigHeader({ row }: { row: EventRowJson }) {
+export function FullGigHeader({ row, isSavedThisSession }: { row: EventRowJson, isSavedThisSession?: boolean }) {
   const gig = row.appGig;
   const date = dayjs(gig.parts[0].startDateTime).format("MMMM D, YYYY");
   const [startTime, endTime] = [gig.startTime, gig.endTime].map(t => DayJsTz(t).format("h:mma"));
@@ -15,7 +15,11 @@ export function FullGigHeader({ row }: { row: EventRowJson }) {
     <div className="font-bold">
       <div>
         <span>{date}</span>
-        {!row.googleGig ? <span className={"text-green-500"}>{" "}NEW</span> : null}
+        {isSavedThisSession
+          ? <span className="text-blue-500">{" "}SAVED</span>
+          : !row.googleGig
+            ? <span className={"text-green-500"}>{" "}NEW</span>
+            : null}
       </div>
       <div className={row.timeHasChanged ? "text-red-700" : ""}>{startTime}-{endTime}</div>
     </div>
