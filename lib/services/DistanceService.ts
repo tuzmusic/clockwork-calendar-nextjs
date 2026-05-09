@@ -5,6 +5,17 @@ import { DistanceData } from "../models/types";
 import { formatDuration } from "../models/utilityFunctions";
 
 export default class DistanceService {
+  public async getLatitude(address: string): Promise<number> {
+    const mapsClient = new Client({});
+    const response = await mapsClient.geocode({
+      params: {
+        key: process.env.GOOGLE_API_KEY!,
+        address
+      }
+    });
+    return response.data.results[0].geometry.location.lat;
+  }
+
   public async getDistanceInfo({ from, to, through }: {
     from: string
     to: string

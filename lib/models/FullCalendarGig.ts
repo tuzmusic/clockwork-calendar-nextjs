@@ -31,7 +31,9 @@ type DistanceKey = "fromHome" |
   "fromWaltham" |
   "fromBoston";
 
-export type FullDistanceInfoObj = Record<DistanceKey, DistanceData>;
+export type FullDistanceInfoObj = Record<DistanceKey, DistanceData> & {
+  isNorthOfHome: boolean;
+};
 export default class FullCalendarGig extends GigWithParts {
   private distanceService: DistanceService;
   private readonly googleId: string | null;
@@ -113,7 +115,10 @@ export default class FullCalendarGig extends GigWithParts {
 
     const { distanceService } = this;
 
-    // todo: simplify this with a mapped object
+    const HOME_LAT = 43.208;
+    const venueLatitude = await distanceService.getLatitude(this.location);
+    const isNorthOfHome = venueLatitude > HOME_LAT;
+
     const fromHome = await distanceService.getDistanceInfo({
       from: LOCATIONS.home,
       to: this.location
@@ -145,6 +150,7 @@ export default class FullCalendarGig extends GigWithParts {
     });
 
     this._distanceInfo = {
+      isNorthOfHome,
       fromHome,
       withWaltham,
       walthamDetour,
@@ -176,9 +182,11 @@ export default class FullCalendarGig extends GigWithParts {
     if (info) {
       lines.push('');
       lines.push(`From home: ${info.fromHome.formattedTime} (${info.fromHome.miles}mi)`);
-      lines.push(`Via Waltham St: ${info.withWaltham.formattedTime} (${info.withWaltham.miles}mi)`);
-      lines.push(`Waltham detour: +${info.walthamDetour.formattedTime} (+${info.walthamDetour.miles}mi)`);
-      lines.push(`From Waltham St: ${info.fromWaltham.formattedTime} (${info.fromWaltham.miles}mi)`);
+      if (!info.isNorthOfHome) {
+        lines.push(`Via Waltham St: ${info.withWaltham.formattedTime} (${info.withWaltham.miles}mi)`);
+        lines.push(`Waltham detour: +${info.walthamDetour.formattedTime} (+${info.walthamDetour.miles}mi)`);
+        lines.push(`From Waltham St: ${info.fromWaltham.formattedTime} (${info.fromWaltham.miles}mi)`);
+      }
     }
     return lines.join('\n');
   }
