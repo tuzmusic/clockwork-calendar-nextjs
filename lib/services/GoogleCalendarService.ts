@@ -49,4 +49,20 @@ export default class GoogleCalendarService extends CalendarService {
       requestBody: json
     });
   }
+
+  async getEvent(eventId: string): Promise<calendar_v3.Schema$Event> {
+    const response = await this.calendar.events.get({
+      eventId,
+      calendarId: this.calendarId,
+    });
+    return response.data;
+  }
+
+  async patchEvent(eventId: string, json: calendar_v3.Schema$Event): Promise<void> {
+    await this.calendar.events.patch({
+      eventId,
+      calendarId: this.calendarId,
+      requestBody: json,
+    });
+  }
 }

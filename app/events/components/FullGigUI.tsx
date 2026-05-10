@@ -5,7 +5,7 @@ import { GigPartUI } from "@/app/events/components/GigPartUI";
 import { GigServerActionButton } from "@/app/events/components/GigServerActionButton";
 import { getDistanceInfo } from "@/app/events/functions/getDistanceInfo";
 import { useActionState } from "react";
-import { saveNewGig, updateGig } from "@/app/events/functions/calendarActions";
+import { saveNewGig, updateGig, updateEventDescription } from "@/app/events/functions/calendarActions";
 import { FullDistanceInfoObj } from "@/lib/models/FullCalendarGig";
 
 
@@ -20,6 +20,7 @@ export function FullGigUI(props: { row: EventRowJson }) {
   const [fetchedDistanceInfo, distanceInfoAction, distanceInfoLoading] = useActionState(getDistanceInfo, null)
   const [_u, updateGigAction, updateGigLoading] = useActionState(updateGig, null)
   const [_s, saveGigAction, saveGigLoading] = useActionState(saveNewGig, null)
+  const [_d, updateDescriptionAction, updateDescriptionLoading] = useActionState(updateEventDescription, null)
 
   const finalDistanceInfo = fetchedDistanceInfo?.distanceInfo ?? gig.distanceInfo
   const updatedRow = !finalDistanceInfo ? row : addDistanceInfoToRow(row, finalDistanceInfo)
@@ -62,6 +63,16 @@ export function FullGigUI(props: { row: EventRowJson }) {
               testId={"GET_DISTANCE_INFO_BUTTON"}
             >
               {distanceInfoLoading ? "Getting distance info..." : "Get distance info"}
+            </GigServerActionButton>
+            : null}
+
+          {row.googleGig ?
+            <GigServerActionButton
+              row={updatedRow}
+              action={updateDescriptionAction}
+              testId={"UPDATE_DESCRIPTION_BUTTON"}
+            >
+              {updateDescriptionLoading ? "Updating description..." : "Update description"}
             </GigServerActionButton>
             : null}
         </div>
