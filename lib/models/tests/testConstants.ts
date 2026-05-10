@@ -10,6 +10,7 @@ export const start = "2024-12-01T19:00:00";
 export const end = "2024-12-01T23:00:00";
 
 export const mockDistanceData = {
+  isNorthOfHome: false,
   fromHome: { miles: 1, minutes: 10, formattedTime: "10m" },
   withWaltham: { miles: 2, minutes: 20, formattedTime: "20m" },
   walthamDetour: { miles: 3, minutes: 30, formattedTime: "30m" },
